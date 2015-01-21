@@ -34,16 +34,69 @@ class BaiduMusic{
 		$filter_positive_num = array("options" => array("min_range" => 1)); // Option used in filter_var() to check whether is a positive number
 		$filter_boolean_num = array("options" => array("min_range" => 0, "max_range" => 1)); // Option used in filter_var() to check whether is a boolean number
 
+		// Validation Template
 		$paramChk = array( /* $_REQUEST parameters pending to check: When force = 1, will throw fatal error and suspend the following actions; When force = 0 and didn't specify a value, default will be used
 								  filter array used to validate data, when func = 1 filter_var() will be used, as well as acceptable values set in include; When func = 0 in_array() will be used */
-			"opt" => array("force" => 1, "error" => "Output Format", "filter" => array("func" => 0, "include" => array("xml", "json"))),
-			"id" => array("force" => 1, "error" => "Song ID", "filter" => array("func" => 1, "type" => FILTER_VALIDATE_INT, "option" => $filter_positive_num)),
-			"rate" => array("force" => 0, "default" => 9999, "filter" => array("func" => 1, "type" => FILTER_VALIDATE_INT, "option" => $filter_positive_num, "include" => array("best", "flac"))),
-			"type" => array("force" => 1, "error" => "Action Type", "filter" => array("func" => 1, "type" => FILTER_VALIDATE_INT, "option" => $filter_boolean_num)),
-			"skim" => array("force" => 0, "default" => 0, "filter" => array("func" => 1, "type" => FILTER_VALIDATE_INT, "option" => $filter_boolean_num)),
-			"html" => array("force" => 0, "default" => 0, "filter" => array("func" => 1, "type" => FILTER_VALIDATE_INT, "option" => $filter_boolean_num)),
-			"fetch" => array("force" => 0, "default" => 0, "filter" => array("func" => 1, "type" => FILTER_VALIDATE_INT, "option" => $filter_boolean_num)),
-			"callback" => array("force" => 0, "default" => null, "nolowercase" => 1)
+			"opt" => array(
+				"force" => 1,
+				"error" => "Output Format",
+				"filter" => array(
+					"func" => 0,
+					"include" => array("xml", "json")
+					)
+				),
+			"id" => array("force" => 1,
+				"error" => "Song ID",
+				"filter" => array(
+					"func" => 1,
+					"type" => FILTER_VALIDATE_INT,
+					"option" => $filter_positive_num)
+				),
+			"rate" => array("force" => 0,
+				"default" => 9999, // Assume the best rate
+				"filter" => array(
+					"func" => 1,
+					"type" => FILTER_VALIDATE_INT,
+					"option" => $filter_positive_num,
+					"include" => array("best", "flac")
+					)
+				),
+			"type" => array(
+				"force" => 1,
+				"error" => "Action Type",
+				"filter" => array(
+					"func" => 1,
+					"type" => FILTER_VALIDATE_INT,
+					"option" => $filter_boolean_num)
+				),
+			"skim" => array("force" => 0,
+				"default" => 0,
+				"filter" => array(
+					"func" => 1,
+					"type" => FILTER_VALIDATE_INT,
+					"option" => $filter_boolean_num)
+				),
+			"html" => array(
+				"force" => 0,
+				"default" => 0,
+				"filter" => array(
+					"func" => 1,
+					"type" => FILTER_VALIDATE_INT,
+					"option" => $filter_boolean_num)
+				),
+			"fetch" => array(
+				"force" => 0,
+				"default" => 0,
+				"filter" => array(
+					"func" => 1,
+					"type" => FILTER_VALIDATE_INT,
+					"option" => $filter_boolean_num)
+				),
+			"callback" => array(
+				"force" => 0, 
+				"default" => null,
+				"nolowercase" => 1
+				)
 		);
 
 		// Anti-humanity code BEGIN: DEEP BREATH REQUIRED!!
@@ -56,7 +109,7 @@ class BaiduMusic{
 			}
 			$this->querydata[$paramName] = isset($paramChk[$paramName]["nolowercase"]) && $paramChk[$paramName]["nolowercase"] ? htmlspecialchars($str[$paramName]) : strtolower(htmlspecialchars($str[$paramName])); // I knew you are a good man but I still need to purify the string
 		}
-		// Anti-humanity code END: FEEL RELAX
+		// Anti-humanity code END: FEEL RELAX (I don't know how I could write these codes but actually I did it, without knowing how to present them more beauitful)
 
 		unset($paramChk); // Free resource
 		unset($paramName);
@@ -211,9 +264,7 @@ class BaiduMusic{
 		@return	string
 	*/
 	public function tidyJson($str){
-		if (0 === strpos(bin2hex($str), 'efbbbf')) { // Fix JSON malformation in binary level
-		   return substr($str, 3);
-		}
+		return 0 === strpos(bin2hex($str), 'efbbbf') ? substr($str, 3) : $str; // Fix JSON malformation in binary level
 	}
 	
 	/*
